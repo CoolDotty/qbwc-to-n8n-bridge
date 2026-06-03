@@ -1,0 +1,41 @@
+{
+  "name": "qbwc-n8n-bridge",
+  "version": "1.0.0",
+  "description": "Bridge between QuickBooks Web Connector (QBWC) and n8n",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "dev": "ts-node src/app.ts",
+    "db:migrate": "ts-node src/db/migrate.ts",
+    "lint": "tsc --noEmit",
+    "test": "echo \"Tests not yet implemented\" && exit 0"
+  },
+  "keywords": ["quickbooks", "qbwc", "n8n", "soap", "bridge"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.3.1",
+    "helmet": "^7.1.0",
+    "pg": "^8.12.0",
+    "soap": "^1.0.0",
+    "uuid": "^10.0.0",
+    "winston": "^3.13.0",
+    "xml2js": "^0.6.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.8",
+    "@types/pg": "^8.11.6",
+    "@types/uuid": "^10.0.0",
+    "@types/xml2js": "^0.4.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.2"
+  }
+}
