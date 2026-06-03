@@ -5,6 +5,7 @@ import * as soap from "soap";
 import { env } from "./config/env";
 import { getPool } from "./db/connection";
 import { qbwcRateLimiter } from "./security/rate-limit";
+import { requireAdminApiKey } from "./security/api-key";
 import { qbwcService, getWSDL } from "./http/soap-controller";
 import adminRouter from "./http/admin-controller";
 import eventsRouter from "./http/internal-events-controller";
@@ -29,7 +30,7 @@ app.get("/health", async (_req, res) => {
   }
 });
 
-app.use("/api/admin", adminRouter);
+app.use("/api/admin", requireAdminApiKey, adminRouter);
 app.use("/api/internal", eventsRouter);
 
 const server = app.listen(env.PORT, () => {

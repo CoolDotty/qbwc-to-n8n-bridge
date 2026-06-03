@@ -17,6 +17,7 @@ const envSchema = z.object({
   MAX_BODY_SIZE: z.string().default("1mb"),
   READ_ONLY: z.string().transform((v) => v === "true").default("false"),
   LOG_LEVEL: z.enum(["error", "warn", "info", "debug"]).default("info"),
+  ADMIN_API_KEY: z.string().min(16),
 });
 
 export const env = envSchema.parse(process.env);
