@@ -1,7 +1,8 @@
 import { validateTicket } from "../../security/session-ticket";
 import { leaseNextJob, markJobSent, createJobAttempt, saveRawMessage } from "../../db/repositories/jobs";
-import { updateConnectionClientVersion, updateConnectionLastSuccess } from "../../db/repositories/connections";
+import { updateConnectionClientVersion, updateConnectionLastSuccess, findConnectionById } from "../../db/repositories/connections";
 import { logQBWCMethod } from "../../observability/logger";
+import { env } from "../../config/env";
 
 const sessionErrors = new Map<string, string>();
 
@@ -45,6 +46,13 @@ export async function sendRequestXML(args: {
 
   if (!job.qbxml_request) {
     setSessionError(args.ticket, `Job ${job.id} has no qbXML request`);
+    return { sendRequestXMLResult: "" };
+  }
+
+  const connection = await findConnectionById(session.connectionId);
+  const isWrite = job.direction === "outbound";
+  if (isWrite && (connection?.is_read_only || env.READ_ONLY)) {
+    setSessionError(args.ticket, "Write operations are disabled in read-only mode");
     return { sendRequestXMLResult: "" };
   }
 

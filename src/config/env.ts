@@ -15,6 +15,7 @@ const envSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.string().transform(Number).default("900000"),
   RATE_LIMIT_MAX: z.string().transform(Number).default("100"),
   MAX_BODY_SIZE: z.string().default("1mb"),
+  READ_ONLY: z.string().transform((v) => v === "true").default("false"),
   LOG_LEVEL: z.enum(["error", "warn", "info", "debug"]).default("info"),
 });
 

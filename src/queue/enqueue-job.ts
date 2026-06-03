@@ -3,6 +3,7 @@ import { findConnectionById } from "../db/repositories/connections";
 import { logger } from "../observability/logger";
 import { createAuditLog } from "../db/repositories/audit";
 import { createOutboundEvent } from "../db/repositories/events";
+import { env } from "../config/env";
 import {
   buildCustomerQueryRq,
   buildInvoiceQueryRq,
@@ -23,6 +24,11 @@ export async function enqueueJob(data: EnqueuePayload) {
   const connection = await findConnectionById(data.connectionId);
   if (!connection) {
     throw new Error(`Connection not found: ${data.connectionId}`);
+  }
+
+  const isWrite = !data.jobType.endsWith(".query");
+  if (isWrite && (connection.is_read_only || env.READ_ONLY)) {
+    throw new Error("Write operations are disabled in read-only mode");
   }
 
   const qbxmlRequest = buildQbxmlRequest(data.jobType, data.entityType, data.payload);
