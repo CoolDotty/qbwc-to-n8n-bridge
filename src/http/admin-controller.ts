@@ -90,7 +90,7 @@ router.get("/connections/:id/qwc", async (req, res) => {
     const qwc = generateQWC({
       appName: connection.display_name,
       appURL: `${env.PUBLIC_URL}/qbwc`,
-      appSupport: `${env.PUBLIC_URL}/support`,
+      appSupport: `${env.PUBLIC_URL}/qbwc`,
       username: connection.username,
       ownerID: connection.owner_id,
       fileID: connection.file_id,

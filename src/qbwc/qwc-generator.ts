@@ -18,6 +18,7 @@ export interface QWCConfig {
 
 export function generateQWC(config: QWCConfig): string {
   const appID = config.appID ?? config.appName.replace(/\s+/g, "");
+  const appSupport = config.appSupport ?? config.appURL;
   const schedulerBlock = config.scheduler
     ? `  <Scheduler>
     <RunEveryNMinutes>${config.scheduler.runEveryNMinutes}</RunEveryNMinutes>
@@ -30,7 +31,7 @@ export function generateQWC(config: QWCConfig): string {
   <AppID>${escapeXml(appID)}</AppID>
   <AppURL>${escapeXml(config.appURL)}</AppURL>
   <AppDescription>${escapeXml(config.appDescription ?? "QBWC to n8n Bridge")}</AppDescription>
-  <AppSupport>${escapeXml(config.appSupport)}</AppSupport>
+  <AppSupport>${escapeXml(appSupport)}</AppSupport>
   <UserName>${escapeXml(config.username)}</UserName>
   <OwnerID>{${config.ownerID}}</OwnerID>
   <FileID>{${config.fileID}}</FileID>
