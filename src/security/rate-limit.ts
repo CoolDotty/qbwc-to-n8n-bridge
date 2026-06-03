@@ -12,3 +12,14 @@ export const qbwcRateLimiter = rateLimit({
     res.status(429).json({ error: "Too many requests" });
   },
 });
+
+export const adminRateLimiter = rateLimit({
+  windowMs: env.RATE_LIMIT_WINDOW_MS,
+  max: env.ADMIN_RATE_LIMIT_MAX,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    logger.warn("Admin rate limit exceeded", { ip: req.ip, path: req.path });
+    res.status(429).json({ error: "Too many requests" });
+  },
+});

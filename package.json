@@ -4,14 +4,21 @@
   "description": "Bridge between QuickBooks Web Connector (QBWC) and n8n",
   "main": "dist/app.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node scripts/copy-migrations.js",
     "start": "node dist/app.js",
     "dev": "ts-node src/app.ts",
     "db:migrate": "ts-node src/db/migrate.ts",
+    "db:migrate:dist": "node dist/db/migrate.js",
     "lint": "tsc --noEmit",
     "test": "echo \"Tests not yet implemented\" && exit 0"
   },
-  "keywords": ["quickbooks", "qbwc", "n8n", "soap", "bridge"],
+  "keywords": [
+    "quickbooks",
+    "qbwc",
+    "n8n",
+    "soap",
+    "bridge"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -23,7 +30,7 @@
     "helmet": "^7.1.0",
     "pg": "^8.12.0",
     "soap": "^1.0.0",
-    "uuid": "^10.0.0",
+    "uuid": "^11.1.1",
     "winston": "^3.13.0",
     "xml2js": "^0.6.2",
     "zod": "^3.23.8"
@@ -37,5 +44,12 @@
     "@types/xml2js": "^0.4.14",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.2"
+  },
+  "overrides": {
+    "tar": "^7.5.11",
+    "@mapbox/node-pre-gyp": "^2.0.2",
+    "bcrypt": {
+      "@mapbox/node-pre-gyp": "^2.0.2"
+    }
   }
 }

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { deliverPendingEvents } from "../integrations/n8n-client";
 import { getPendingEvents } from "../db/repositories/events";
 import { verifySignature } from "../security/hmac";
-import { logger } from "../observability/logger";
+import { logger, sanitizeLogString } from "../observability/logger";
 
 const router = Router();
 
@@ -38,7 +38,7 @@ router.post("/webhook/ingest", async (req, res) => {
     if (!signature || !verifySignature(req.body, signature)) {
       return res.status(401).json({ error: "Invalid signature" });
     }
-    logger.info("Ingested signed webhook", { eventType: req.body.type });
+    logger.info("Ingested signed webhook", { eventType: sanitizeLogString(req.body?.type) });
     res.json({ status: "received" });
   } catch (err) {
     logger.error("Webhook ingest failed", { error: (err as Error).message });

@@ -25,6 +25,6 @@ export function getWSDL(): string {
   const srcPath = path.join(__dirname, "..", "..", "src", "qbwc", "wsdl", "qbwc.wsdl");
   const wsdlPath = fs.existsSync(distPath) ? distPath : srcPath;
   let wsdl = fs.readFileSync(wsdlPath, "utf-8");
-  wsdl = wsdl.replace("REPLACE_WITH_PUBLIC_URL", env.PUBLIC_URL);
+  wsdl = wsdl.replaceAll("REPLACE_WITH_PUBLIC_URL", env.PUBLIC_URL);
   return wsdl;
 }

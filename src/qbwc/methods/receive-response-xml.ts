@@ -6,6 +6,14 @@ import { createOutboundEvent } from "../../db/repositories/events";
 import { createAuditLog } from "../../db/repositories/audit";
 import { parseQBXMLResponse } from "../qbxml/parsers/response-parser";
 import { getSessionError, setSessionError, clearSessionError } from "./send-request-xml";
+import { env } from "../../config/env";
+
+const MAX_RAW_MESSAGE_BYTES = 5 * 1024 * 1024; // 5 MiB cap on persisted QBXML payloads
+
+function capRawXml(raw: string): string {
+  if (Buffer.byteLength(raw, "utf8") <= MAX_RAW_MESSAGE_BYTES) return raw;
+  return `[truncated: exceeded ${MAX_RAW_MESSAGE_BYTES} bytes]\n` + raw.slice(0, 16384);
+}
 
 export async function receiveResponseXML(args: {
   ticket: string;
@@ -29,7 +37,7 @@ export async function receiveResponseXML(args: {
   await saveRawMessage({
     connectionId: session.connectionId,
     direction: "response",
-    rawXml: args.response,
+    rawXml: capRawXml(args.response),
   });
 
   try {

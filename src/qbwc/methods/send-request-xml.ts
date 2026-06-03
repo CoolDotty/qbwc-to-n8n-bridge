@@ -4,10 +4,20 @@ import { updateConnectionClientVersion, updateConnectionLastSuccess, findConnect
 import { logQBWCMethod } from "../../observability/logger";
 import { env } from "../../config/env";
 
+const MAX_SESSION_ERROR_ENTRIES = 1000;
 const sessionErrors = new Map<string, string>();
 
+function trimSessionErrors(): void {
+  while (sessionErrors.size > MAX_SESSION_ERROR_ENTRIES) {
+    const oldest = sessionErrors.keys().next().value;
+    if (oldest === undefined) break;
+    sessionErrors.delete(oldest);
+  }
+}
+
 export function setSessionError(ticket: string, message: string): void {
-  sessionErrors.set(ticket, message);
+  sessionErrors.set(ticket, message.slice(0, 2000));
+  trimSessionErrors();
 }
 
 export function getSessionError(ticket: string): string | undefined {
@@ -67,7 +77,7 @@ export async function sendRequestXML(args: {
     jobId: job.id,
     connectionId: session.connectionId,
     direction: "request",
-    rawXml: job.qbxml_request,
+    rawXml: job.qbxml_request.slice(0, 5 * 1024 * 1024),
   });
 
   logQBWCMethod("sendRequestXML_dispatch", session.connectionId, { jobId: job.id, entityType: job.entity_type });

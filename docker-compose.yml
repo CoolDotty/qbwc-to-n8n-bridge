@@ -26,7 +26,7 @@ services:
       db:
         condition: service_healthy
     command: >
-      sh -c "npm run db:migrate && node dist/app.js"
+      sh -c "node dist/db/migrate.js && node dist/app.js"
     restart: unless-stopped
 
 volumes:

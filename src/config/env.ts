@@ -18,6 +18,8 @@ const envSchema = z.object({
   READ_ONLY: z.string().transform((v) => v === "true").default("false"),
   LOG_LEVEL: z.enum(["error", "warn", "info", "debug"]).default("info"),
   ADMIN_API_KEY: z.string().min(16),
+  TRUST_PROXY: z.string().optional(),
+  ADMIN_RATE_LIMIT_MAX: z.string().transform(Number).default("30"),
 });
 
 export const env = envSchema.parse(process.env);

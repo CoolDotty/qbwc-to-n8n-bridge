@@ -23,3 +23,8 @@ export function logQBWCMethod(method: string, connectionId: string | null, meta:
 export function logAuthFailure(username: string, reason: string, meta: Record<string, unknown> = {}) {
   logger.warn(`QBWC auth failure: ${reason}`, { username, reason, ...meta });
 }
+
+export function sanitizeLogString(value: unknown, maxLength = 200): string {
+  if (typeof value !== "string") return "";
+  return value.replace(/[\r\n\t\0\v\f\x1b]/g, "_").slice(0, maxLength);
+}

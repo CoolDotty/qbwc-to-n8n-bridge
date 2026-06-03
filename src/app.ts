@@ -4,7 +4,7 @@ import helmet from "helmet";
 import * as soap from "soap";
 import { env } from "./config/env";
 import { getPool } from "./db/connection";
-import { qbwcRateLimiter } from "./security/rate-limit";
+import { qbwcRateLimiter, adminRateLimiter } from "./security/rate-limit";
 import { requireAdminApiKey } from "./security/api-key";
 import { qbwcService, getWSDL } from "./http/soap-controller";
 import adminRouter from "./http/admin-controller";
@@ -13,6 +13,11 @@ import { logger } from "./observability/logger";
 import { deliverPendingEvents } from "./integrations/n8n-client";
 
 const app = express();
+
+if (env.TRUST_PROXY) {
+  const n = Number(env.TRUST_PROXY);
+  app.set("trust proxy", Number.isFinite(n) ? n : env.TRUST_PROXY);
+}
 
 app.use(helmet());
 app.use(bodyParser.json({ limit: env.MAX_BODY_SIZE }));
@@ -30,8 +35,8 @@ app.get("/health", async (_req, res) => {
   }
 });
 
-app.use("/api/admin", requireAdminApiKey, adminRouter);
-app.use("/api/internal", eventsRouter);
+app.use("/api/admin", adminRateLimiter, requireAdminApiKey, adminRouter);
+app.use("/api/internal", adminRateLimiter, requireAdminApiKey, eventsRouter);
 
 const server = app.listen(env.PORT, () => {
   logger.info(`QBWC-n8n-Bridge listening on port ${env.PORT}`, { port: env.PORT, env: env.NODE_ENV });
@@ -41,22 +46,24 @@ const wsdl = getWSDL();
 soap.listen(app as any, "/qbwc", qbwcService as any, wsdl);
 logger.info("SOAP service mounted at /qbwc");
 
-setInterval(() => {
+const deliveryInterval = setInterval(() => {
   deliverPendingEvents().catch((err) => {
     logger.error("Background event delivery failed", { error: (err as Error).message });
   });
 }, 30000);
 
-process.on("SIGTERM", async () => {
-  logger.info("SIGTERM received, shutting down gracefully");
+function shutdown(signal: string) {
+  logger.info(`${signal} received, shutting down gracefully`);
+  clearInterval(deliveryInterval);
   server.close(() => {
     getPool().end().then(() => process.exit(0));
   });
-});
+  // Hard-exit if graceful shutdown takes too long
+  setTimeout(() => {
+    logger.error("Forced shutdown after timeout");
+    process.exit(1);
+  }, 10_000).unref();
+}
 
-process.on("SIGINT", async () => {
-  logger.info("SIGINT received, shutting down gracefully");
-  server.close(() => {
-    getPool().end().then(() => process.exit(0));
-  });
-});
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
