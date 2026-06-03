@@ -95,8 +95,6 @@ router.get("/connections/:id/qwc", async (req, res) => {
       ownerID: connection.owner_id,
       fileID: connection.file_id,
       qbType: connection.qb_type,
-      isReadOnly: connection.is_read_only,
-      scheduler: { runEveryNMinutes: connection.poll_minutes },
     });
 
     res.setHeader("Content-Type", "application/xml");

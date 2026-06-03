@@ -10,20 +10,11 @@ export interface QWCConfig {
   ownerID: string;
   fileID: string;
   qbType: string;
-  isReadOnly: boolean;
-  scheduler?: {
-    runEveryNMinutes: number;
-  };
 }
 
 export function generateQWC(config: QWCConfig): string {
   const appID = config.appID ?? config.appName.replace(/\s+/g, "");
   const appSupport = config.appSupport ?? config.appURL;
-  const schedulerBlock = config.scheduler
-    ? `  <Scheduler>
-    <RunEveryNMinutes>${config.scheduler.runEveryNMinutes}</RunEveryNMinutes>
-  </Scheduler>`
-    : "";
 
   return `<?xml version="1.0"?>
 <QBWCXML>
@@ -36,8 +27,8 @@ export function generateQWC(config: QWCConfig): string {
   <OwnerID>{${config.ownerID}}</OwnerID>
   <FileID>{${config.fileID}}</FileID>
   <QBType>${config.qbType}</QBType>
-  <IsReadOnly>${config.isReadOnly ? "true" : "false"}</IsReadOnly>
-${schedulerBlock}
+  <Style>Document</Style>
+  <AuthFlags>0xF</AuthFlags>
 </QBWCXML>`;
 }
 
