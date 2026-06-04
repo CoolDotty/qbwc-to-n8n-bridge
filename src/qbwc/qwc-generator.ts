@@ -1,5 +1,5 @@
 import { env } from "../config/env";
-import type { QBType } from "../config/env";
+import { QB_TYPE_VALUES, type QBType } from "../config/env";
 
 export interface QWCConfig {
   appName: string;
@@ -25,6 +25,21 @@ export interface QWCConfig {
   };
 }
 
+/**
+ * QBWC only accepts the literal values "QBFS" or "QBPOS" in <QBType>.
+ * Country codes (US, CA, UK) belong in the qbXMLCountry parameter that
+ * QBWC sends to us in sendRequestXML — never in the QWC. If a connection
+ * row somehow has a non-standard value (legacy data, direct SQL edit),
+ * coerce it to a safe default rather than emit a QWC that bricks the
+ * Web Connector with QBWC1065.
+ */
+function normalizeQBType(value: string | undefined | null): QBType {
+  if (value && (QB_TYPE_VALUES as readonly string[]).includes(value)) {
+    return value as QBType;
+  }
+  return "QBFS";
+}
+
 function schedulerBlock(s: QWCConfig["scheduler"]): string {
   if (!s) return "";
   if (s.runEveryNSeconds !== undefined) {
@@ -48,6 +63,7 @@ export function generateQWC(config: QWCConfig): string {
   const appID = config.appID ?? config.appName.replace(/\s+/g, "");
   const appSupport = config.appSupport ?? config.appURL;
   const authFlags = config.authFlags ?? env.QWC_AUTH_FLAGS;
+  const qbType = normalizeQBType(config.qbType);
 
   return `<?xml version="1.0"?>
 <QBWCXML>
@@ -62,7 +78,7 @@ ${optionalField("CertURL", config.certURL)}
   <UserName>${escapeXml(config.username)}</UserName>
   <OwnerID>{${config.ownerID}}</OwnerID>
   <FileID>{${config.fileID}}</FileID>
-  <QBType>${config.qbType}</QBType>
+  <QBType>${qbType}</QBType>
   <Style>Document</Style>
   <AuthFlags>${escapeXml(authFlags)}</AuthFlags>
 ${optionalField("UnattendedModePref", config.unattendedModePref)}
