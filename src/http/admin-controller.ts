@@ -112,7 +112,6 @@ router.get("/connections/:id/qwc", async (req, res) => {
       ownerID: connection.owner_id,
       fileID: connection.file_id,
       qbType: connection.qb_type as "QBFS" | "QBPOS",
-      isReadOnly: connection.is_read_only,
       authFlags: connection.auth_flags,
       scheduler: { runEveryNMinutes: connection.poll_minutes },
     });

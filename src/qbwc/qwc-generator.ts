@@ -13,7 +13,6 @@ export interface QWCConfig {
   ownerID: string;
   fileID: string;
   qbType: QBType;
-  isReadOnly: boolean;
   authFlags?: string;
   certURL?: string;
   notify?: boolean;
@@ -40,6 +39,21 @@ function normalizeQBType(value: string | undefined | null): QBType {
   return "QBFS";
 }
 
+/**
+ * Generate the .qwc (QuickBooks Web Connector configuration) file.
+ *
+ * Design note: <IsReadOnly> is intentionally hard-coded to "false" here.
+ * Intuit's QBWC requires write permission during the *first* registration
+ * of an app in order to store our FileID as a Company data extension. If
+ * <IsReadOnly>true</true> is set, that bootstrap step fails with QBWC1080
+ * and the app can't be added at all. Once the FileID is stored, the QWC's
+ * IsReadOnly flag is purely cosmetic — it just hides write options in the
+ * QBWC UI. Real read-only enforcement happens server-side in
+ * enqueueJob() and sendRequestXML(), which silently drop outbound write
+ * jobs when connection.is_read_only or env.READ_ONLY is set. So we always
+ * advertise "we may write" to QBWC, but in practice we only do so when
+ * read-only mode is off. See audit doc for the read-only walk-through.
+ */
 function schedulerBlock(s: QWCConfig["scheduler"]): string {
   if (!s) return "";
   if (s.runEveryNSeconds !== undefined) {
@@ -83,7 +97,7 @@ ${optionalField("CertURL", config.certURL)}
   <AuthFlags>${escapeXml(authFlags)}</AuthFlags>
 ${optionalField("UnattendedModePref", config.unattendedModePref)}
 ${optionalField("PersonalDataPref", config.personalDataPref)}
-  <IsReadOnly>${config.isReadOnly ? "true" : "false"}</IsReadOnly>
+  <IsReadOnly>false</IsReadOnly>
   <Notify>${config.notify ? "true" : "false"}</Notify>
 ${schedulerBlock(config.scheduler)}
 </QBWCXML>`;
