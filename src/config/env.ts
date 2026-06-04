@@ -20,6 +20,18 @@ const envSchema = z.object({
   ADMIN_API_KEY: z.string().min(16),
   TRUST_PROXY: z.string().optional(),
   ADMIN_RATE_LIMIT_MAX: z.string().transform(Number).default("30"),
+  QWC_AUTH_FLAGS: z.string().default("0xF"),
+  AUTH_POSTPONE_SECONDS: z.string().transform(Number).default("0"),
+  AUTH_MIN_RUN_EVERY_N_SECONDS: z.string().transform(Number).default("0"),
+  SERVER_VERSION: z.string().default("QBWC-n8n-Bridge/1.0"),
+  QBW_DEFAULT_PATH: z.string().optional(),
 });
+
+export const QB_TYPE_VALUES = ["QBFS", "QBPOS"] as const;
+export type QBType = (typeof QB_TYPE_VALUES)[number];
+
+export function isValidQBType(value: unknown): value is QBType {
+  return typeof value === "string" && (QB_TYPE_VALUES as readonly string[]).includes(value);
+}
 
 export const env = envSchema.parse(process.env);

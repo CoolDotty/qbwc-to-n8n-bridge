@@ -5,12 +5,14 @@ import { sendRequestXML } from "../qbwc/methods/send-request-xml";
 import { receiveResponseXML } from "../qbwc/methods/receive-response-xml";
 import { getLastError } from "../qbwc/methods/get-last-error";
 import { closeConnection } from "../qbwc/methods/close-connection";
+import { getServerVersion } from "../qbwc/methods/get-server-version";
+import { connectionError } from "../qbwc/methods/connection-error";
+import { getInteractiveURL, interactiveDone, interactiveRejected } from "../qbwc/methods/interactive";
 import { env } from "../config/env";
 
 export const qbwcService = {
   serverVersion: async () => ({ serverVersionResult: "QBWC-n8n-Bridge 1.0" }),
   clientVersion: async (args: { strVersion: string }) => {
-    // Accept any client version; return empty string = no update needed
     return { clientVersionResult: "" };
   },
   authenticate,
@@ -18,6 +20,11 @@ export const qbwcService = {
   receiveResponseXML,
   getLastError,
   closeConnection,
+  getServerVersion,
+  connectionError,
+  getInteractiveURL,
+  interactiveDone,
+  interactiveRejected,
 };
 
 export function getWSDL(): string {

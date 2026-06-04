@@ -121,6 +121,84 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+
+      <s:element name="getServerVersion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ticket" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getServerVersionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getServerVersionResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+
+      <s:element name="connectionError">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ticket" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hresult" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="message" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="connectionErrorResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="connectionErrorResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+
+      <s:element name="getInteractiveURL">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="wcTicket" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getInteractiveURLResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getInteractiveURLResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+
+      <s:element name="interactiveDone">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="wcTicket" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="interactiveDoneResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="interactiveDoneResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+
+      <s:element name="interactiveRejected">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="wcTicket" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="reason" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="interactiveRejectedResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="interactiveRejectedResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
 
@@ -173,6 +251,41 @@
     <wsdl:part name="parameters" element="tns:closeConnectionResponse" />
   </wsdl:message>
 
+  <wsdl:message name="getServerVersionSoapIn">
+    <wsdl:part name="parameters" element="tns:getServerVersion" />
+  </wsdl:message>
+  <wsdl:message name="getServerVersionSoapOut">
+    <wsdl:part name="parameters" element="tns:getServerVersionResponse" />
+  </wsdl:message>
+
+  <wsdl:message name="connectionErrorSoapIn">
+    <wsdl:part name="parameters" element="tns:connectionError" />
+  </wsdl:message>
+  <wsdl:message name="connectionErrorSoapOut">
+    <wsdl:part name="parameters" element="tns:connectionErrorResponse" />
+  </wsdl:message>
+
+  <wsdl:message name="getInteractiveURLSoapIn">
+    <wsdl:part name="parameters" element="tns:getInteractiveURL" />
+  </wsdl:message>
+  <wsdl:message name="getInteractiveURLSoapOut">
+    <wsdl:part name="parameters" element="tns:getInteractiveURLResponse" />
+  </wsdl:message>
+
+  <wsdl:message name="interactiveDoneSoapIn">
+    <wsdl:part name="parameters" element="tns:interactiveDone" />
+  </wsdl:message>
+  <wsdl:message name="interactiveDoneSoapOut">
+    <wsdl:part name="parameters" element="tns:interactiveDoneResponse" />
+  </wsdl:message>
+
+  <wsdl:message name="interactiveRejectedSoapIn">
+    <wsdl:part name="parameters" element="tns:interactiveRejected" />
+  </wsdl:message>
+  <wsdl:message name="interactiveRejectedSoapOut">
+    <wsdl:part name="parameters" element="tns:interactiveRejectedResponse" />
+  </wsdl:message>
+
   <wsdl:portType name="QBWebConnectorSvcSoap">
     <wsdl:operation name="serverVersion">
       <wsdl:input message="tns:serverVersionSoapIn" />
@@ -201,6 +314,26 @@
     <wsdl:operation name="closeConnection">
       <wsdl:input message="tns:closeConnectionSoapIn" />
       <wsdl:output message="tns:closeConnectionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getServerVersion">
+      <wsdl:input message="tns:getServerVersionSoapIn" />
+      <wsdl:output message="tns:getServerVersionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="connectionError">
+      <wsdl:input message="tns:connectionErrorSoapIn" />
+      <wsdl:output message="tns:connectionErrorSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getInteractiveURL">
+      <wsdl:input message="tns:getInteractiveURLSoapIn" />
+      <wsdl:output message="tns:getInteractiveURLSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="interactiveDone">
+      <wsdl:input message="tns:interactiveDoneSoapIn" />
+      <wsdl:output message="tns:interactiveDoneSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="interactiveRejected">
+      <wsdl:input message="tns:interactiveRejectedSoapIn" />
+      <wsdl:output message="tns:interactiveRejectedSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
 
@@ -238,6 +371,31 @@
     </wsdl:operation>
     <wsdl:operation name="closeConnection">
       <soap:operation soapAction="http://developer.intuit.com/closeConnection" style="document" />
+      <wsdl:input><soap:body use="literal" /></wsdl:input>
+      <wsdl:output><soap:body use="literal" /></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getServerVersion">
+      <soap:operation soapAction="http://developer.intuit.com/getServerVersion" style="document" />
+      <wsdl:input><soap:body use="literal" /></wsdl:input>
+      <wsdl:output><soap:body use="literal" /></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="connectionError">
+      <soap:operation soapAction="http://developer.intuit.com/connectionError" style="document" />
+      <wsdl:input><soap:body use="literal" /></wsdl:input>
+      <wsdl:output><soap:body use="literal" /></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getInteractiveURL">
+      <soap:operation soapAction="http://developer.intuit.com/getInteractiveURL" style="document" />
+      <wsdl:input><soap:body use="literal" /></wsdl:input>
+      <wsdl:output><soap:body use="literal" /></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="interactiveDone">
+      <soap:operation soapAction="http://developer.intuit.com/interactiveDone" style="document" />
+      <wsdl:input><soap:body use="literal" /></wsdl:input>
+      <wsdl:output><soap:body use="literal" /></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="interactiveRejected">
+      <soap:operation soapAction="http://developer.intuit.com/interactiveRejected" style="document" />
       <wsdl:input><soap:body use="literal" /></wsdl:input>
       <wsdl:output><soap:body use="literal" /></wsdl:output>
     </wsdl:operation>
