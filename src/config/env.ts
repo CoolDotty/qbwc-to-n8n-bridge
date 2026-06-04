@@ -9,7 +9,6 @@ const envSchema = z.object({
   PUBLIC_URL: z.string().url(),
   DATABASE_URL: z.string().url(),
   N8N_WEBHOOK_URL: z.string().url().optional(),
-  N8N_WEBHOOK_SECRET: z.string().min(1).optional(),
   SESSION_SECRET: z.string().min(32),
   BCRYPT_ROUNDS: z.string().transform(Number).default("12"),
   RATE_LIMIT_WINDOW_MS: z.string().transform(Number).default("900000"),

@@ -1,6 +1,5 @@
 import { env } from "../config/env";
 import { getPendingEvents, markEventDelivered, markEventFailed } from "../db/repositories/events";
-import { signPayload } from "../security/hmac";
 import { logger } from "../observability/logger";
 
 export async function deliverPendingEvents(): Promise<void> {
@@ -34,13 +33,10 @@ export async function sendEventToN8n(eventType: string, payload: object): Promis
     timestamp: new Date().toISOString(),
   };
 
-  const signature = signPayload(body);
-
   const res = await fetch(env.N8N_WEBHOOK_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-QBWC-Signature": signature,
     },
     body: JSON.stringify(body),
   });
