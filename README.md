@@ -1,6 +1,6 @@
 # ⚠️ DEPRECATED
 
-**This project is deprecated in favor of an n8n custom trigger node.** Please use the official n8n integration instead.
+**This project is deprecated in favor of an n8n custom trigger node.**
 
 See: https://github.com/CoolDotty/n8n-QuickBooks-Web-Connect
 
