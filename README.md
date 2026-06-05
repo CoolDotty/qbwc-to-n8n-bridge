@@ -1,3 +1,11 @@
+# ⚠️ DEPRECATED
+
+**This project is deprecated in favor of an n8n custom trigger node.** Please use the official n8n integration instead.
+
+See: https://github.com/CoolDotty/n8n-QuickBooks-Web-Connect
+
+---
+
 # QBWC to n8n Bridge
 
 A production-oriented Node.js bridge between QuickBooks Web Connector (QBWC) and n8n. This service implements the QBWC SOAP contract, manages a durable job queue, and emits normalized events to n8n via private webhooks.
